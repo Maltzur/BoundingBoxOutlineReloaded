@@ -5,11 +5,11 @@ import com.irtimaled.bbor.client.renderers.Renderer;
 import com.irtimaled.bbor.common.BoundingBoxType;
 import com.irtimaled.bbor.common.TypeHelper;
 import com.irtimaled.bbor.config.ConfigManager;
-import com.mojang.blaze3d.platform.GLX;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
@@ -65,7 +65,9 @@ public class SettingsScreen extends Screen {
             @Override
             public void onPressed() {
                 ConfigManager.saveConfig();
-                minecraft.openScreen(lastScreen);
+                if (client != null) {
+                    client.openScreen(lastScreen);
+                }
             }
         });
     }
@@ -115,7 +117,7 @@ public class SettingsScreen extends Screen {
         this.addTabs("General", "Structures");
 
         buildTab(0,
-                (x, y, width) -> new AbstractButton(x, y, width, "Active", this.minecraft.world != null) {
+                (x, y, width) -> new AbstractButton(x, y, width, "Active", this.client != null && this.client.world != null) {
                     @Override
                     public void onPressed() {
                         ClientRenderer.toggleActive();
@@ -177,7 +179,9 @@ public class SettingsScreen extends Screen {
     }
 
     private void drawScreen(int top, int bottom) {
-        this.minecraft.getTextureManager().bindTexture(DrawableHelper.BACKGROUND_LOCATION);
+        if (this.client != null) {
+            this.client.getTextureManager().bindTexture(DrawableHelper.BACKGROUND_TEXTURE);
+        }
 
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_FOG);
@@ -226,14 +230,14 @@ public class SettingsScreen extends Screen {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float unknown) {
-        if (this.minecraft.world == null) {
-            this.renderBackground();
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float unknown) {
+        if (this.client != null && this.client.world == null) {
+            this.renderBackground(matrices);
             this.drawScreen(getY(-1), getY(5.5) - 4);
         }
-        this.drawCenteredString(this.font, title.asString(), this.width / 2, 15, 16777215);
+        this.drawCenteredString(matrices, this.textRenderer, title.asString(), this.width / 2, 15, 16777215);
         for (IRenderableControl control : controls) {
-            control.render(mouseX, mouseY);
+            control.render(matrices, mouseX, mouseY);
         }
     }
 }

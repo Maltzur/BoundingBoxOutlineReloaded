@@ -1,6 +1,8 @@
 package com.irtimaled.bbor.client.gui;
 
 import com.irtimaled.bbor.config.Setting;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +33,9 @@ class IntSettingSlider extends AbstractSlider implements IRenderableControl {
         return this;
     }
 
-    private String getDisplayValue() {
+    private Text getDisplayValue() {
         Integer value = setting.get();
-        return prefix + ": " + displayValues.getOrDefault(value, value.toString());
+        return new LiteralText(prefix + ": " + displayValues.getOrDefault(value, value.toString()));
     }
 
     protected Integer getSettingValue() {

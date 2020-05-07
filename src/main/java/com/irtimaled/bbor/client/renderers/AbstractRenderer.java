@@ -5,6 +5,9 @@ import com.irtimaled.bbor.config.ConfigManager;
 import com.mojang.blaze3d.platform.GLX;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
@@ -16,7 +19,7 @@ public abstract class AbstractRenderer<T extends AbstractBoundingBox> {
     private static double TAU = 6.283185307179586D;
     private static double PI = TAU / 2D;
 
-    public abstract void render(T boundingBox);
+    public abstract void render(MatrixStack matrices, T boundingBox);
 
     void renderCuboid(OffsetBox bb, Color color) {
         OffsetBox nudge = bb.nudge();
@@ -105,7 +108,7 @@ public abstract class AbstractRenderer<T extends AbstractBoundingBox> {
         GL11.glPolygonOffset(-1.f, -1.f);
     }
 
-    void renderText(OffsetPoint offsetPoint, String... texts) {
+    void renderText(MatrixStack matrices, OffsetPoint offsetPoint, String... texts) {
         TextRenderer fontRenderer = MinecraftClient.getInstance().textRenderer;
 
         GL11.glPushMatrix();
@@ -124,9 +127,10 @@ public abstract class AbstractRenderer<T extends AbstractBoundingBox> {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthMask(true);
         float top = -(fontRenderer.fontHeight * texts.length) / 2f;
-        for (String text : texts) {
+        for (String textStr : texts) {
+            Text text = new LiteralText(textStr);
             float left = fontRenderer.getStringWidth(text) / 2f;
-            fontRenderer.draw(text, -left, top, -1);
+            fontRenderer.draw(matrices, text, -left, top, -1);
             top += fontRenderer.fontHeight;
         }
         GL11.glDisable(GL11.GL_TEXTURE_2D);

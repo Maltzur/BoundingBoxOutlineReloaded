@@ -2,10 +2,12 @@ package com.irtimaled.bbor.client.gui;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 
 abstract class AbstractButton extends AbstractButtonWidget implements IRenderableControl {
     AbstractButton(int x, int y, int width, String name) {
-        super(x, y, width, 20, name);
+        super(x, y, width, 20, new LiteralText(name));
     }
 
     AbstractButton(int x, int y, int width, String name, boolean enabled) {
@@ -14,17 +16,16 @@ abstract class AbstractButton extends AbstractButtonWidget implements IRenderabl
     }
 
     @Override
-    public void render(int mouseX, int mouseY) {
-        super.render(mouseX, mouseY, 0f);
+    public void render(MatrixStack matrices, int mouseX, int mouseY) {
+        super.render(matrices, mouseX, mouseY, 0f);
     }
 
     @Override
-    protected void renderBg(MinecraftClient minecraft, int mouseX, int mouseY) {
-        renderBackground();
+    protected void renderBg(MatrixStack matrices, MinecraftClient minecraft, int mouseX, int mouseY) {
+        renderBackground(matrices);
     }
 
-    protected void renderBackground() {
-    }
+    protected void renderBackground(MatrixStack matrices) {}
 
     @Override
     protected int getYImage(boolean hovered) {

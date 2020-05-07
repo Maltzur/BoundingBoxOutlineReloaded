@@ -5,12 +5,13 @@ import com.irtimaled.bbor.client.interop.SpawningSphereHelper;
 import com.irtimaled.bbor.common.MathHelper;
 import com.irtimaled.bbor.common.models.BoundingBoxSpawningSphere;
 import com.irtimaled.bbor.config.ConfigManager;
+import net.minecraft.client.util.math.MatrixStack;
 
 import java.awt.*;
 
 public class SpawningSphereRenderer extends AbstractRenderer<BoundingBoxSpawningSphere> {
     @Override
-    public void render(BoundingBoxSpawningSphere boundingBox) {
+    public void render(MatrixStack matrices, BoundingBoxSpawningSphere boundingBox) {
         OffsetPoint sphereCenter = new OffsetPoint(boundingBox.getCenter())
                 .offset(boundingBox.getCenterOffsetX(), boundingBox.getCenterOffsetY(), boundingBox.getCenterOffsetZ());
 
@@ -19,7 +20,7 @@ public class SpawningSphereRenderer extends AbstractRenderer<BoundingBoxSpawning
 
         Integer spawnableSpacesCount = boundingBox.getSpawnableSpacesCount();
         if (spawnableSpacesCount != null) {
-            renderText(sphereCenter, "Spawnable", spawnableSpacesCount == 0 ? "None" : String.format("%,d", (int) spawnableSpacesCount));
+            renderText(matrices, sphereCenter, "Spawnable", spawnableSpacesCount == 0 ? "None" : String.format("%,d", (int) spawnableSpacesCount));
         }
 
         renderSphere(sphereCenter, BoundingBoxSpawningSphere.SAFE_RADIUS, Color.GREEN, 5, 5);

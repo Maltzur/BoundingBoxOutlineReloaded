@@ -10,11 +10,10 @@ public class WorldLoaded {
     private final int spawnZ;
 
     public WorldLoaded(ServerWorld world) {
-        LevelProperties info = world.getLevelProperties();
         this.dimensionId = world.getDimension().getType().getRawId();
-        this.seed = info.getSeed();
-        this.spawnX = info.getSpawnX();
-        this.spawnZ = info.getSpawnZ();
+        this.seed = world.getLevelProperties().getSeed();
+        this.spawnX = world.getLevelProperties().getSpawnX();
+        this.spawnZ = world.getLevelProperties().getSpawnZ();
     }
 
     public int getDimensionId() {
